@@ -26,11 +26,11 @@ function CardGrid({ children }: { children: React.ReactNode }) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-xl overflow-hidden border border-gray-700 bg-gray-900 shadow-md animate-pulse">
-      <div className="h-14 bg-gray-800" />
+    <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 shadow-md animate-pulse">
+      <div className="h-14 bg-gray-200 dark:bg-gray-800" />
       <div className="p-4 space-y-2">
-        <div className="h-3 bg-gray-700 rounded w-3/4" />
-        <div className="h-3 bg-gray-700 rounded w-1/2" />
+        <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-3/4" />
+        <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-1/2" />
       </div>
     </div>
   )
@@ -41,7 +41,7 @@ export default function StatusPage({ data, loading, error }: StatusPageProps) {
   if (error) {
     return (
       <div className="max-w-6xl mx-auto px-6 py-12 text-center">
-        <p className="text-red-400 text-sm">Failed to load status data: {error}</p>
+        <p className="text-red-600 dark:text-red-400 text-sm">Failed to load status data: {error}</p>
       </div>
     )
   }

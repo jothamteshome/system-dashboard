@@ -1,24 +1,29 @@
-// Film perforation strip — for watch-together
+// Film strip full card background — for watch-together
 export default function CinemaBanner() {
   return (
-    <div
-      className="h-14 overflow-hidden relative bg-neutral-900 flex items-center"
-      aria-hidden="true"
-    >
-      {/* Top perforation strip */}
-      <div className="absolute inset-x-0 top-1 flex gap-2 px-2">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div key={i} className="h-2 w-4 rounded-sm bg-neutral-700 shrink-0" />
+    <div className="absolute inset-0 bg-neutral-950 overflow-hidden">
+      {/* Left sprocket strip */}
+      <div className="absolute left-0 inset-y-0 w-8 bg-neutral-900 flex flex-col justify-around items-center py-3">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="w-4 h-3 rounded-sm bg-neutral-950 border border-neutral-700" />
         ))}
       </div>
-      {/* Bottom perforation strip */}
-      <div className="absolute inset-x-0 bottom-1 flex gap-2 px-2">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div key={i} className="h-2 w-4 rounded-sm bg-neutral-700 shrink-0" />
+      {/* Right sprocket strip */}
+      <div className="absolute right-0 inset-y-0 w-8 bg-neutral-900 flex flex-col justify-around items-center py-3">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="w-4 h-3 rounded-sm bg-neutral-950 border border-neutral-700" />
         ))}
       </div>
-      {/* Film grain overlay */}
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle,_#fff_1px,_transparent_1px)] bg-[length:8px_8px]" />
+      {/* Center film area — subtle scanlines */}
+      <div
+        className="absolute inset-y-0 opacity-5"
+        style={{
+          left: '2rem',
+          right: '2rem',
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, #fff 3px, #fff 4px)',
+        }}
+      />
     </div>
   )
 }
+

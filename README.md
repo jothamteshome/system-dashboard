@@ -1,73 +1,33 @@
-# React + TypeScript + Vite
+# Status Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal status page for [status.whymighta.net](https://status.whymighta.net) — displays live health for Minecraft servers, web projects, and Docker containers.
 
-Currently, two official plugins are available:
+Built with Vite + React + TypeScript + Tailwind CSS. Data is fetched from the [status-api](../infra-hub/lambdas/status-api/) Lambda, polling every 60 seconds.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Sections
 
-## React Compiler
+- **Minecraft Servers** — online/offline, player count, version, latency
+- **Sites** — HTTP health for static sites and the watch-together app (frontend + backend)
+- **Docker Containers** — CPU, memory, net I/O, block I/O, uptime per container
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Development
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create `.env.local` with:
 ```
+VITE_APP_STATUS_API_URL=/api
+```
+
+The dev server proxies `/api` to `https://api.status.whymighta.net` to avoid CORS.
+
+## Deployment
+
+Deployed automatically to S3 + CloudFront via GitHub Actions on push to `main`.
+
+Required GitHub secrets: `AWS_STATIC_SITE_ROLE_TO_ASSUME`, `HOSTED_ZONE_NAME`, `HOSTED_ZONE_ID`
+Required GitHub variables: `DOMAIN_NAME`, `VITE_APP_STATUS_API_URL`
+

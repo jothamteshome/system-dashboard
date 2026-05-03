@@ -32,10 +32,10 @@ export default function Header({ lastChecked }: HeaderProps) {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <header className="border-b border-gray-700 bg-gray-900 px-6 py-4">
+    <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-6 py-4">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-gray-100 tracking-tight">Status Dashboard</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">Status Dashboard</h1>
           {lastChecked && (
             <p className="text-xs text-gray-500 mt-0.5">
               Last updated {timeAgo(lastChecked)}
@@ -45,7 +45,7 @@ export default function Header({ lastChecked }: HeaderProps) {
 
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-gray-800 transition-colors"
+          className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
         >
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}

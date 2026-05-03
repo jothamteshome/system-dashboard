@@ -7,9 +7,13 @@ interface StatusCardProps {
 
 export default function StatusCard({ banner, children }: StatusCardProps) {
   return (
-    <div className="rounded-xl overflow-hidden border border-gray-700 bg-gray-900 dark:bg-gray-900 shadow-md">
+    <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 shadow-lg relative">
+      {/* Themed background fills the entire card */}
       {banner}
-      <div className="p-4">{children}</div>
+      {/* Scrim: light in light mode, dark in dark mode */}
+      <div className="absolute inset-0 bg-white/80 dark:bg-black/50" />
+      {/* Card content sits above both */}
+      <div className="relative z-10 p-4">{children}</div>
     </div>
   )
 }
