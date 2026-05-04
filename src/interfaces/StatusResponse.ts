@@ -26,28 +26,19 @@ export interface SiteStatus {
   error?: string
 }
 
-export interface WatchTogetherSiteStatus {
-  frontend: SiteStatus
-  backend: SiteStatus
-}
-
-export interface Sites {
-  'snake-game': SiteStatus
-  'pixel-sorter': SiteStatus
-  'watch-together': WatchTogetherSiteStatus
-}
-
 export interface ContainerStats {
   cpu_percent: string
   memory_usage: string
   memory_limit: string | null
   memory_percent: string
-  net_in: string
-  net_out: string | null
-  block_read: string
-  block_write: string | null
+  net_in?: string
+  net_out?: string | null
+  block_read?: string
+  block_write?: string | null
   started_at?: string
   restart_count?: number
+  online?: false
+  status?: string
 }
 
 export interface ContainersSuccess {
@@ -62,7 +53,8 @@ export type Containers = ContainersSuccess | ContainersError
 
 export interface StatusResponse {
   minecraft: Record<string, MinecraftServer>
-  sites: Sites
+  sites: Record<string, SiteStatus>
+  apis: Record<string, SiteStatus>
   containers: Containers
   checked_at: number
 }

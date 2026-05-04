@@ -7,6 +7,8 @@ interface MinecraftCardProps {
   server: MinecraftServer
 }
 
+const MAX_PLAYERS_SHOWN = 5
+
 export default function MinecraftCard({ hostname, server }: MinecraftCardProps) {
   return (
     <StatusCard banner={<MinecraftBanner />}>
@@ -34,7 +36,7 @@ export default function MinecraftCard({ hostname, server }: MinecraftCardProps) 
 
           {server.players.sample.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {server.players.sample.map(name => (
+              {server.players.sample.slice(0, MAX_PLAYERS_SHOWN).map(name => (
                 <span
                   key={name}
                   className="text-xs bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 rounded"
@@ -42,6 +44,11 @@ export default function MinecraftCard({ hostname, server }: MinecraftCardProps) 
                   {name}
                 </span>
               ))}
+              {server.players.sample.length > MAX_PLAYERS_SHOWN && (
+                <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-1.5 py-0.5 rounded">
+                  +{server.players.sample.length - MAX_PLAYERS_SHOWN} more
+                </span>
+              )}
             </div>
           )}
 
@@ -56,7 +63,11 @@ export default function MinecraftCard({ hostname, server }: MinecraftCardProps) 
           </div>
         </div>
       ) : (
-        <p className="text-sm text-red-600 dark:text-red-400 break-all">{server.error}</p>
+        <p className="text-sm text-red-600 dark:text-red-400 line-clamp-2">
+          {/timed?\s*out/i.test(server.error)
+            ? 'Server is off — starts automatically when someone joins'
+            : server.error}
+        </p>
       )}
     </StatusCard>
   )

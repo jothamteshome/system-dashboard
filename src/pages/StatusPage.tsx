@@ -5,6 +5,7 @@ import SiteCard from '../components/cards/SiteCard'
 import ContainerCard from '../components/cards/ContainerCard'
 import PixelBanner from '../components/banners/PixelBanner'
 import CinemaBanner from '../components/banners/CinemaBanner'
+import SnakeBanner from '../components/banners/SnakeBanner'
 
 interface StatusPageProps {
   data: StatusResponse | null
@@ -16,12 +17,20 @@ function isContainersError(c: ContainersError | ContainersSuccess): c is Contain
   return 'error' in c
 }
 
-function CardGrid({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {children}
-    </div>
-  )
+const SITE_DISPLAY_NAMES: Record<string, string> = {
+  'snake-game':     'Snake Game',
+  'pixel-sorter':   'Pixel Sorter',
+  'watch-together': 'Watch Together',
+}
+
+const API_DISPLAY_NAMES: Record<string, string> = {
+  'watch-together': 'Watch Together API',
+}
+
+function siteBanner(name: string) {
+  if (name === 'snake-game') return <SnakeBanner />
+  if (name === 'pixel-sorter') return <PixelBanner />
+  return <CinemaBanner />
 }
 
 function SkeletonCard() {
@@ -40,7 +49,7 @@ export default function StatusPage({ data, loading, error }: StatusPageProps) {
 
   if (error) {
     return (
-      <div className="max-w-6xl mx-auto px-6 py-12 text-center">
+      <div className="max-w-8xl mx-auto px-6 py-12 text-center">
         <p className="text-red-600 dark:text-red-400 text-sm">Failed to load status data: {error}</p>
       </div>
     )
@@ -48,15 +57,18 @@ export default function StatusPage({ data, loading, error }: StatusPageProps) {
 
   if (loading || !data) {
     return (
-      <main className="max-w-6xl mx-auto px-6 py-8 space-y-10">
-        <Section title="Minecraft Servers">
-          <CardGrid>{Array.from({ length: 1 }).map((_, i) => <SkeletonCard key={i} />)}</CardGrid>
+      <main className="max-w-8xl mx-auto px-6 py-8">
+        <Section title="APIs" storageKey="apis">
+          {[<SkeletonCard key={0} />]}
         </Section>
-        <Section title="Sites">
-          <CardGrid>{Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}</CardGrid>
+        <Section title="Sites" storageKey="sites">
+          {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
         </Section>
-        <Section title="Docker Containers">
-          <CardGrid>{Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}</CardGrid>
+        <Section title="Minecraft" storageKey="minecraft">
+          {[<SkeletonCard key={0} />]}
+        </Section>
+        <Section title="Infrastructure" storageKey="infrastructure">
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
         </Section>
       </main>
     )
@@ -65,49 +77,50 @@ export default function StatusPage({ data, loading, error }: StatusPageProps) {
   const containersHaveError = isContainersError(data.containers)
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-8 space-y-10">
-      {/* Minecraft */}
-      <Section title="Minecraft Servers">
-        <CardGrid>
-          {Object.entries(data.minecraft).map(([hostname, server]) => (
-            <MinecraftCard key={hostname} hostname={hostname} server={server} />
-          ))}
-        </CardGrid>
+    <main className="max-w-8xl mx-auto px-6 py-8">
+      {/* APIs */}
+      <Section title="APIs" storageKey="apis">
+        {Object.entries(data.apis).map(([name, site]) => (
+          <SiteCard
+            key={name}
+            name={name}
+            displayName={API_DISPLAY_NAMES[name] ?? name}
+            banner={<CinemaBanner />}
+            site={site}
+          />
+        ))}
       </Section>
 
       {/* Sites */}
-      <Section title="Sites">
-        <CardGrid>
+      <Section title="Sites" storageKey="sites">
+        {Object.entries(data.sites).map(([name, site]) => (
           <SiteCard
-            name="snake-game"
-            banner={<PixelBanner />}
-            site={data.sites['snake-game']}
+            key={name}
+            name={name}
+            displayName={SITE_DISPLAY_NAMES[name] ?? name}
+            banner={siteBanner(name)}
+            site={site}
           />
-          <SiteCard
-            name="pixel-sorter"
-            banner={<PixelBanner />}
-            site={data.sites['pixel-sorter']}
-          />
-          <SiteCard
-            name="watch-together"
-            banner={<CinemaBanner />}
-            site={data.sites['watch-together']}
-          />
-        </CardGrid>
+        ))}
       </Section>
 
-      {/* Docker Containers */}
-      <Section title="Docker Containers">
+      {/* Minecraft */}
+      <Section title="Minecraft" storageKey="minecraft">
+        {Object.entries(data.minecraft).map(([hostname, server]) => (
+          <MinecraftCard key={hostname} hostname={hostname} server={server} />
+        ))}
+      </Section>
+
+      {/* Infrastructure */}
+      <Section title="Infrastructure" storageKey="infrastructure" grid={!containersHaveError}>
         {containersHaveError ? (
           <div className="rounded-xl border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300">
             Could not fetch container stats: {(data.containers as ContainersError).error}
           </div>
         ) : (
-          <CardGrid>
-            {Object.entries(data.containers as ContainersSuccess).map(([name, stats]) => (
-              <ContainerCard key={name} name={name} stats={stats} />
-            ))}
-          </CardGrid>
+          Object.entries(data.containers as ContainersSuccess).map(([name, stats]) => (
+            <ContainerCard key={name} name={name} stats={stats} />
+          ))
         )}
       </Section>
     </main>

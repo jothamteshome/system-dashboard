@@ -2,3 +2,11 @@
 
 /* Enable class-based dark mode (toggle via .dark on <html>) */
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-ash-950: #18181b;
+  --color-ash-900: #1f1f23;
+  --color-ash-800: #27272c;
+  --color-ash-700: #2e2e35;
+  --width-8xl: 88rem;
+}

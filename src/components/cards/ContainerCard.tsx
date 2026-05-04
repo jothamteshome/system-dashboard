@@ -29,7 +29,37 @@ function uptime(startedAt: string): string {
   return `${Math.floor(h / 24)}d ${h % 24}h`
 }
 
+function stoppedBadge(status: string | undefined) {
+  if (!status) {
+    return { label: 'Unknown', className: 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300' }
+  }
+  if (/exited \(0\)/i.test(status)) {
+    return { label: 'Stopped', className: 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400' }
+  }
+  if (/exited/i.test(status)) {
+    return { label: 'Crashed', className: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' }
+  }
+  return { label: 'Unknown', className: 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300' }
+}
+
 export default function ContainerCard({ name, stats }: ContainerCardProps) {
+  if (stats.online === false) {
+    const badge = stoppedBadge(stats.status)
+    return (
+      <StatusCard banner={<DockerBanner />}>
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <h3 className="text-sm font-mono text-gray-700 dark:text-gray-300 truncate">{name}</h3>
+          <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${badge.className}`}>
+            {badge.label}
+          </span>
+        </div>
+        {stats.status && (
+          <p className="text-xs text-gray-500 dark:text-gray-400">{stats.status}</p>
+        )}
+      </StatusCard>
+    )
+  }
+
   const cpuNum = parseFloat(stats.cpu_percent)
   const memNum = parseFloat(stats.memory_percent)
 
@@ -56,12 +86,12 @@ export default function ContainerCard({ name, stats }: ContainerCardProps) {
 
         <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 pt-1 border-t border-gray-300 dark:border-gray-700">
           <span>Net I/O</span>
-          <span>{stats.net_in} / {stats.net_out ?? '—'}</span>
+          <span>{stats.net_in ?? '—'} / {stats.net_out ?? '—'}</span>
         </div>
 
         <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
           <span>Block I/O</span>
-          <span>{stats.block_read} / {stats.block_write ?? '—'}</span>
+          <span>{stats.block_read ?? '—'} / {stats.block_write ?? '—'}</span>
         </div>
 
         {stats.started_at && (

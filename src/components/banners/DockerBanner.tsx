@@ -4,14 +4,21 @@ const whalePath =
 
 export default function DockerBanner() {
   return (
-    <div
-      className="absolute inset-0 overflow-hidden"
-      style={{ background: "linear-gradient(135deg, #0a1628 0%, #0e3a5e 50%, #0a1628 100%)" }}
-    >
+    <div className="absolute inset-0 overflow-hidden bg-[#0d1f2d]">
+      {/* Subtle blue grid */}
+      <div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(36,150,237,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(36,150,237,0.4) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+      {/* Whale — centered, more visible */}
       <svg
-        className="absolute inset-0 w-full h-full opacity-[0.08]"
+        className="absolute inset-0 w-full h-full opacity-20"
         viewBox="0 0 24 24"
-        fill="#38bdf8"
+        fill="#2496ed"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="xMidYMid meet"
       >
